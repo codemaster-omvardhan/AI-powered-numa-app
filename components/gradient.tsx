@@ -1,4 +1,10 @@
-import { Canvas, RadialGradient, Rect, vec } from "@shopify/react-native-skia";
+import {
+  Blur,
+  Canvas,
+  RadialGradient,
+  Rect,
+  vec,
+} from "@shopify/react-native-skia";
 import React from "react";
 import { Dimensions, StyleSheet, View } from "react-native";
 
@@ -20,6 +26,7 @@ export default function Gradient() {
               Colors.white,
             ]}
           />
+          <Blur blur={10} mode={"clamp"} />
         </Rect>
       </Canvas>
     </View>

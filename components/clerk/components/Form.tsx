@@ -11,7 +11,7 @@ interface FormProps {
 export function Form({ title, subtitle, children, headerChildren }: FormProps) {
   return (
     <>
-      <Gradient />
+      <Gradient isSpeaking={false} position="top" />
       <View style={styles.container}>
         <View style={styles.contentWrapper}>
           <View style={styles.headerContainer}>
@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   formContainer: {
-    backgroundColor: "#ffffff",
+    // backgroundColor: "#ffffff",
     paddingHorizontal: 24,
     paddingTop: 20,
     paddingBottom: 20,

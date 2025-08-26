@@ -5,11 +5,13 @@ import {
   Rect,
   vec,
 } from "@shopify/react-native-skia";
+
 import React, { useEffect } from "react";
 import { Dimensions, StyleSheet, View } from "react-native";
 import {
   useDerivedValue,
   useSharedValue,
+  withRepeat,
   withSpring,
   withTiming,
 } from "react-native-reanimated";
@@ -93,8 +95,17 @@ export default function Gradient({ position, isSpeaking }: GradientProps) {
   const radiusScale = useSharedValue(1);
   const baseRadiusValue = useSharedValue(RADIUS_CONFIG.baseRadius.default);
   const mountRadius = useSharedValue(0);
+
   const center = useDerivedValue(() => {
     return vec(VISUAL_CONFIG.center.x, animatedY.value);
+  });
+
+  const animatedRadius = useDerivedValue(() => {
+    const { min, max } = calculateRadiusBound(baseRadiusValue.value);
+    const calculatedRadius = min + (max - min) * radiusScale.value;
+    return mountRadius.value < calculatedRadius
+      ? mountRadius.value
+      : calculatedRadius;
   });
 
   useEffect(() => {
@@ -116,13 +127,40 @@ export default function Gradient({ position, isSpeaking }: GradientProps) {
     });
   }, []);
 
+  useEffect(() => {
+    const duration = ANIMATION_CONFIG.durations.SPEAKING_TRANSITION;
+    if (isSpeaking) {
+      baseRadiusValue.value = withTiming(RADIUS_CONFIG.baseRadius.speaking);
+      animatedY.value = withTiming(getTargetY("center"), { duration });
+    } else {
+      baseRadiusValue.value = withTiming(RADIUS_CONFIG.baseRadius.default);
+      animatedY.value = withTiming(getTargetY(position), { duration });
+    }
+  }, [isSpeaking, baseRadiusValue, animatedY, position]);
+
+  useEffect(() => {
+    if (isSpeaking) {
+      radiusScale.value = withRepeat(
+        withTiming(RADIUS_CONFIG.speakingScale, {
+          duration: ANIMATION_CONFIG.durations.PULSE,
+        }),
+        -1,
+        true
+      );
+    } else {
+      radiusScale.value = withTiming(RADIUS_CONFIG.quietScale, {
+        duration: ANIMATION_CONFIG.durations.QUIET_TRANSITION,
+      });
+    }
+  }, [isSpeaking, radiusScale]);
+
   return (
     <View style={StyleSheet.absoluteFill}>
       <Canvas style={{ flex: 1 }}>
         <Rect x={0} y={0} width={width} height={height}>
           <RadialGradient
             c={center}
-            r={128}
+            r={animatedRadius}
             colors={[
               Colors.mediumBlue,
               Colors.lightBlue,

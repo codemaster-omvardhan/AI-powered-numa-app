@@ -34,7 +34,14 @@
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
-      ]
+      ], 
+      [
+        "@config-plugins/react-native-webrtc",
+        {
+          "microphonepermission": "Allow ${PRODUCT_NAME} to access your microphone fro AI voice conversation"
+        }
+      ],
+        ["@livekit/@livekit/react-native-expo-plugin"]
     ],
     "experiments": {
       "typedRoutes": true

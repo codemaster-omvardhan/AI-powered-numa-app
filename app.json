@@ -41,7 +41,7 @@
           "microphonepermission": "Allow ${PRODUCT_NAME} to access your microphone fro AI voice conversation"
         }
       ],
-        ["@livekit/@livekit/react-native-expo-plugin"]
+        ["@livekit/react-native-expo-plugin"]
     ],
     "experiments": {
       "typedRoutes": true

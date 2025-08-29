@@ -1,7 +1,7 @@
 import { useUser } from "@clerk/clerk-expo";
 import { useConversation } from "@elevenlabs/react-native";
 import React from "react";
-import { Button, Text, View } from "react-native";
+import { Button, ScrollView, Text } from "react-native";
 
 export default function SessionScreen() {
   const { user } = useUser();
@@ -43,7 +43,7 @@ export default function SessionScreen() {
   };
 
   return (
-    <View>
+    <ScrollView contentInsetAdjustmentBehavior="automatic">
       <Text>SessionScreen</Text>
       <Button title="Start Conversation" onPress={startConversation} />
       <Button
@@ -51,6 +51,6 @@ export default function SessionScreen() {
         onPress={endConversation}
         color={"red"}
       />
-    </View>
+    </ScrollView>
   );
 }

@@ -1,10 +1,17 @@
+import { sessions } from "@/utils/session";
 import { useUser } from "@clerk/clerk-expo";
 import { useConversation } from "@elevenlabs/react-native";
+import { useLocalSearchParams } from "expo-router";
 import React from "react";
-import { Button, ScrollView, Text } from "react-native";
+import { Text, View } from "react-native";
+import Button from "../Button";
+import Gradient from "../gradient";
 
 export default function SessionScreen() {
   const { user } = useUser();
+  const { sessionId } = useLocalSearchParams();
+  const session =
+    sessions.find((s) => s.id === Number(sessionId)) ?? sessions[0];
 
   const conversation = useConversation({
     onConnect: () => console.log("Connected to conversation"),
@@ -25,8 +32,8 @@ export default function SessionScreen() {
         agentId: process.env.EXPO_PUBLIC_AGENT_ID,
         dynamicVariables: {
           user_name: user?.username ?? "User",
-          session_title: "test",
-          session_description: "test",
+          session_title: session.title,
+          session_description: session.description,
         },
       });
     } catch (e) {
@@ -43,14 +50,31 @@ export default function SessionScreen() {
   };
 
   return (
-    <ScrollView contentInsetAdjustmentBehavior="automatic">
-      <Text>SessionScreen</Text>
-      <Button title="Start Conversation" onPress={startConversation} />
-      <Button
-        title="End Conversation"
-        onPress={endConversation}
-        color={"red"}
+    <>
+      <Gradient
+        position="top"
+        isSpeaking={
+          conversation.status === "connected" ||
+          conversation.status === "connecting"
+        }
       />
-    </ScrollView>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          gap: 16,
+        }}
+      >
+        <Text style={{ fontSize: 32, fontWeight: "bold" }}>
+          {session.title}
+        </Text>
+        <Text style={{ fontSize: 16, fontWeight: 500, opacity: 0.3 }}>
+          {session.description}
+        </Text>
+        <Button onPress={startConversation}>Start Conversation</Button>
+        <Button onPress={endConversation}>End Conversation</Button>
+      </View>
+    </>
   );
 }

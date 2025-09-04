@@ -10,6 +10,7 @@ export default function Button({ children, ...props }: PressableProps) {
       style={[styles.button, isPressed && styles.buttonPressed]}
       onPressIn={() => setIsPressed(true)}
       onPressOut={() => setIsPressed(false)}
+      {...props}
     >
       {typeof children === "string" ? (
         <Text style={styles.text}>{children}</Text>

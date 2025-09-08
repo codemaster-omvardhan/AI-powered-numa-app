@@ -9,7 +9,8 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bitcode": false
     },
     "android": {
       "adaptiveIcon": {
@@ -17,7 +18,17 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.codemasteromvardhan.numaapp"
+      "package": "com.codemasteromvardhan.numaapp",
+      "permissions": [
+        "android.permission.ACCESS_NETWORK_STATE",
+        "android.permission.CAMERA",
+        "android.permission.INTERNET",
+        "android.permission.MODIFY_AUDIO_SETTINGS",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.SYSTEM_ALERT_WINDOW",
+        "android.permission.WAKE_LOCK",
+        "android.permission.BLUETOOTH"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -34,17 +45,25 @@
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
-      ], 
+      ],
       [
         "@config-plugins/react-native-webrtc",
         {
           "microphonepermission": "Allow ${PRODUCT_NAME} to access your microphone fro AI voice conversation"
         }
       ],
-        ["@livekit/react-native-expo-plugin"]
+      [
+        "@livekit/react-native-expo-plugin"
+      ]
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "889087ac-16d8-471d-aa39-32de42e15228"
+      }
     }
   }
 }

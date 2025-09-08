@@ -1,8 +1,8 @@
 import { sessions } from "@/utils/session";
 import { useUser } from "@clerk/clerk-expo";
 import { useConversation } from "@elevenlabs/react-native";
-import * as Brightness from 'expo-brightness';
-import { useLocalSearchParams } from "expo-router";
+import * as Brightness from "expo-brightness";
+import { router, useLocalSearchParams } from "expo-router";
 import React, { useState } from "react";
 import { Text, View } from "react-native";
 import Button from "../Button";
@@ -37,12 +37,12 @@ export default function SessionScreen() {
         console.log("☀️ Setting brightness to", { brightnessValue });
 
         const { status } = await Brightness.requestPermissionsAsync();
-        if(status === "granted"){
+        if (status === "granted") {
           await Brightness.setSystemBrightnessAsync(brightnessValue);
           return brightnessValue;
         }
-      }
-    }
+      },
+    },
   });
 
   const startConversation = async () => {
@@ -68,13 +68,17 @@ export default function SessionScreen() {
   const endConversation = async () => {
     try {
       await conversation.endSession();
+      router.push({
+        pathname: "/(protected)/summary",
+        params: { conversationId },
+      });
     } catch (e) {
       console.log(e);
     }
   };
 
   const canStart = conversation.status === "disconnected" && !isStarting;
-  const canEnd = conversation.status === "connected" ;
+  const canEnd = conversation.status === "connected";
 
   return (
     <>
@@ -99,8 +103,9 @@ export default function SessionScreen() {
         <Text style={{ fontSize: 16, fontWeight: 500, opacity: 0.3 }}>
           {session.description}
         </Text>
-        <Button onPress={canStart ? startConversation : endConversation} 
-        disabled = {!canStart && !canEnd}
+        <Button
+          onPress={canStart ? startConversation : endConversation}
+          disabled={!canStart && !canEnd}
         >
           {canStart ? "Start Conversation" : "End Conversation"}
         </Button>

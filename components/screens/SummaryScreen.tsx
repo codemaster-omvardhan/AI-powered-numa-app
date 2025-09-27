@@ -51,7 +51,7 @@ export default function SummaryScreen() {
             </Text>
             <Text style={styles.title}>Stats</Text>
             <Text style={styles.subtitle}>
-              {conversation?.metadata?.call_duration_secs} seconds
+              {conversation?.metadata?.call_duration_seconds} seconds
             </Text>
             <Text style={styles.subtitle}>
               {conversation?.metadata?.cost} tokens

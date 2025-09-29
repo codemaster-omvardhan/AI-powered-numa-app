@@ -4,11 +4,17 @@ import { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import Button from "../Button";
 import Gradient from "../gradient";
+import { appwriteConfig, databases } from "@/utils/appwrite";
+import { ID } from "react-native-appwrite";
+import { useUser } from "@clerk/clerk-react";
 
 export default function SummaryScreen() {
   const { conversationId } = useLocalSearchParams();
   const [conversation, setConversation] = useState<ConversationResponse>();
   const router = useRouter();
+  const [isSaving, setIsSaving] = useState(false);
+
+  const {user} = useUser();
 
   useEffect(() => {
     getSummary();
@@ -21,6 +27,33 @@ export default function SummaryScreen() {
 
     const data: { conversation: ConversationResponse } = await response.json();
     setConversation(data.conversation);
+  }
+
+  async function saveAndContinue() {
+    try{
+      setIsSaving(true);
+      await databases.createdocument(appwriteConfig.databaseId,
+        appwriteConfig.tables.sessions
+        ID.unique(),
+        {
+          user_id: user?.id,
+          status: conversation?.status,
+          conversation_id: conversationId,
+          tokens: Number(conversation?.metadata?.cost),
+          call_duration_secs: Number(
+            conversation?.metadata?.call_duration_seconds
+          ),
+          transcript: conversation?.transcript.map((t) => t.message).join("\n"),
+          call_summary_title: conversation?.analysis?.call_summary_title,
+        }
+      );
+
+      router.dismissAll();
+    } catch(e){
+      console.log(e);
+    } finally{
+      setIsSaving(false);
+    }
   }
 
   return (
@@ -68,7 +101,9 @@ export default function SummaryScreen() {
           </View>
         )}
         <View style={{ alignItems: "center" }}>
-          <Button onPress={() => router.dismissAll()}>Save and Continue</Button>
+          <Button onPress={saveAndContinue}>
+            {isSaving ? "Saving..." : "Save & Continue"}
+          </Button>
         </View>
       </ScrollView>
     </>

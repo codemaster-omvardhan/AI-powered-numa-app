@@ -10,12 +10,12 @@ const SESSIONS_COLLECTION_ID = "test"; //68d81396000f512dfba5
 
 
 const appwriteConfig = {
-    endpoint: 'https://fra.cloud.appwrite.io/v1', // Your Appwrite Endpoint
+    endpoint: 'https://fra.cloud.appwrite.io/v1', // Appwrite Endpoint
     projectId: PROJECT_ID,
     bundleId: BUNDLE_ID,
     databaseId: DB_ID,
     tables: {
-        sessions: SESSIONS_COLLECTION_ID, // Your Sessions Table ID
+        sessions: SESSIONS_COLLECTION_ID, //Sessions Table ID
     },
 }
 
@@ -31,6 +31,7 @@ import { Models } from 'appwrite';
 
 export { appwriteConfig, client, databases };
 export interface Session extends Models.Document {
+    $createdAt: string | number | Date;
     user_id: string;
     status: "in-progress";
     conv_id: string;
